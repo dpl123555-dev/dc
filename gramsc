@@ -1,0 +1,35 @@
+v=[1 0 0; 1 1 1;0 0 1]';
+
+n=length(v);
+
+U = zeros(size(v)); 
+E = zeros(size(v)); 
+U(:,1)=v(:,1);
+%E(:,1)=U(:,1)/norm(U(:,1));
+E(:,1) = U(:,1) / norm(U(:,1));
+
+
+for j = 2:n        % j = 2, 3
+    U(:,j) = v(:,j);           % start from the original v_j
+    for i = 1:j-1              % subtract projections on all previous e_i
+        U(:,j) = U(:,j) - (dot(v(:,j),E(:,i)) * E(:,i));
+    end
+    E(:,j) = U(:,j) / norm(U(:,j));   % normalize to get e_j
+end
+disp("orthonormal vectors");
+disp(E);
+
+figure;
+hold on;
+grid on;
+axis equal;
+quiver3(0,0,0,v(1,1),v(2,1),v(3,1),"r","LineWidth",2);
+quiver3(0,0,0,v(1,2),v(2,2),v(3,2),"g","LineWidth",2);
+quiver3(0,0,0,v(1,3),v(2,3),v(3,3),"b","LineWidth",2);
+quiver3(0,0,0,E(1,1),E(2,1),E(3,1),"r--","LineWidth",2);
+quiver3(0,0,0,E(1,2),E(2,2),E(3,2),"g--","LineWidth",2);
+quiver3(0,0,0,E(1,3),E(2,3),E(3,3),"b--","LineWidth",2);
+
+xlabel("x axis");
+ylabel("y axis");
+title("orthogonal vectors");
