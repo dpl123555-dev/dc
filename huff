@@ -1,0 +1,22 @@
+p=input("enter the probabilities");
+n=length(p);
+symbol=1:n;
+
+[dict,avglen]=huffmandict(symbol,p);
+
+disp("the huffman dict ");
+
+for i=1:n
+    fprintf("symbol %d:%s\n",symbol(i),num2str(dict{i,2}));
+end
+
+sym=input(sprintf("enter values 1 to %d",n));
+
+encode=huffmanenco(sym,dict);
+disp("th encoded value");
+disp(encode);
+decode=huffmandeco(encode,dict);
+disp("th decoded value");
+disp(decode);
+
+
