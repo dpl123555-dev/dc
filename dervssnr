@@ -1,36 +1,23 @@
-N = 1e4;
-snr_db = 0:5:20;
-samples = 5;
+n=1e4;
+snr_db=0:5:20;
+l=5;
 
-data = randi([0 1],1,N);
+b=randi([0 1],1,n);
+p=ones(1,l);
+tx=kron(b,p);
 
-rect = ones(1, samples);   % your pulse
+for k=1:length(snr_db)
+    snr=10^(snr_db(k)/10);
+    r=tx+sqrt(1/(2*snr))*randn(1,length(tx));
+    y=conv(r,p,'same');
+    rx=y(l:l:end)>l/2;
+    BER(k)=mean(rx ~=b);
 
-for k = 1:length(snr_db)
-
-    tx = kron(data, rect);   % upsample
-
-    snr_lin = 10^(snr_db(k)/10);
-
-    % noise variance = 1/(2*SNR)
-    noise = sqrt(1/(2*snr_lin)) * randn(1, length(tx));
-
-    rx = tx + noise;
-
-    % matched filter
-    y = conv(rx, rect, "same");
-
-    % sample every 'samples' points
-    tb = y(samples:samples:end);
-
-    est_bits = tb > (samples/2);
-
-    BER(k) = sum(est_bits ~= data) / N;
 end
 
-% plot
-semilogy(snr_db, BER, '-o'); grid on;
-xlabel("SNR (dB)"); ylabel("BER");
-title("BER vs SNR");
+semilogy(snr_db,BER,'o-');
+grid on;
+xlabel("SNR");
+ylabel("BER");
 
 
